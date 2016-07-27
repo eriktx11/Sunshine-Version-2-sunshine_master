@@ -44,6 +44,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
@@ -106,7 +108,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
 
         //googleClient.connect();
 
-
+    private String mPeerId;
     Bundle bundle = new Bundle();
 
     @Override
@@ -116,11 +118,12 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
 
         // Create a DataMap object and send it to the data layer
         DataMap dataMap = new DataMap();
-        dataMap.putLong("time", new Date().getTime());
-        dataMap.putString("hole", "1");
-        dataMap.putString("front", "250");
-        dataMap.putString("middle", "260");
-        dataMap.putString("back", "270");
+        //dataMap.putLong("time", new Date().getTime());
+        dataMap.putInt("Temperature", bundle.getInt("Temperature"));
+        dataMap.putInt("TemperatureLow", bundle.getInt("TemperatureLow"));
+        dataMap.putString("Condition", bundle.getString("Description"));
+        //dataMap.putString("middle", "260");
+        //dataMap.putString("back", "270");
         //Requires a new thread to avoid blocking the UI
         new SendToDataLayerThread(WEARABLE_DATA_PATH, dataMap).start();
     }
@@ -150,22 +153,37 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
         }
 
         public void run() {
-            // Construct a DataRequest and send over the data layer
 
-            PutDataMapRequest putDMR = PutDataMapRequest.create(path);
-            putDMR.getDataMap().putAll(dataMap);
-            PutDataRequest request = putDMR.asPutDataRequest();
-            request.setUrgent();
+            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/count");
+            putDataMapReq.getDataMap().putInt("COUNT_COUNT", 7);
+            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
 
-            //dataMap.getDataMap("dataMap").putLong("Time",System.currentTimeMillis());
-            DataApi.DataItemResult result = Wearable.DataApi.putDataItem(googleClient, request).await();
+            putDataMapReq.getDataMap().putLong("currentTimeMillis", System.currentTimeMillis());
+            Wearable.MessageApi.sendMessage( googleClient, "mPeerId", path, dataMap.toByteArray() )
+                    .setResultCallback(
+                            new ResultCallback<MessageApi.SendMessageResult>() {
+                                @Override
+                                public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+                                    Log.v("MyTag", "Successful sent to wear layer: " + sendMessageResult.getStatus());
+                                }
+                            }
+                    );
 
-            if (result.getStatus().isSuccess()) {
-                Log.v("myTag", "DataMap: " + dataMap + " sent successfully to data layer ");
-            } else {
-                // Log an error
-                Log.v("myTag", "ERROR: failed to send DataMap to data layer");
-            }
+
+//            PutDataMapRequest putDMR = PutDataMapRequest.create(path);
+//            putDMR.getDataMap().putAll(dataMap);
+//            PutDataRequest request = putDMR.asPutDataRequest();
+//            request.setUrgent();
+//
+//            //dataMap.getDataMap("dataMap").putLong("Time",System.currentTimeMillis());
+//            DataApi.DataItemResult result = Wearable.DataApi.putDataItem(googleClient, request).await();
+//
+//            if (result.getStatus().isSuccess()) {
+//                Log.v("myTag", "DataMap: " + dataMap + " sent successfully to data layer ");
+//            } else {
+//                // Log an error
+//                Log.v("myTag", "ERROR: failed to send DataMap to data layer");
+//            }
         }
 
     }
@@ -263,11 +281,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
                 }
             }
         }
-
-
-        bundle.putString("one", "one");
-        bundle.putString("two", "two");
-        googleClient.connect();
 
         return;
     }
@@ -400,6 +413,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
                 weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID, weatherId);
 
                 cVVector.add(weatherValues);
+
+                bundle.putInt("Temperature", (int) high);
+                bundle.putInt("TemperatureLow", (int)low);
+                bundle.putString("Description", description);
+                googleClient.connect();
             }
 
             int inserted = 0;

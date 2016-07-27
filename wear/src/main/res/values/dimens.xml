@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="digital_text_size">35dp</dimen>
-    <dimen name="digital_text_size_round">40dp</dimen>
-    <dimen name="digital_x_offset">45dp</dimen>
-    <dimen name="digital_x_offset_round">55dp</dimen>
-    <dimen name="digital_y_offset">70dp</dimen>
+    <dimen name="analog_hand_stroke">3dp</dimen>
+    <dimen name="runner_time_size">24pt</dimen>
+    <dimen name="runner_time_size_round">26pt</dimen>
+    <dimen name="runner_date_size">12pt</dimen>
+    <dimen name="runner_date_size_round">12pt</dimen>
+    <dimen name="runner_date_suffix_size">10pt</dimen>
+    <dimen name="runner_date_suffix_size_round">10pt</dimen>
+
+    <dimen name="runner_temperature_size">18pt</dimen>
+    <dimen name="runner_temperature_size_round">18pt</dimen>
+    <dimen name="runner_temperature_suffix_size">15pt</dimen>
+    <dimen name="runner_temperature_suffix_size_round">7pt</dimen>
+
+    <dimen name="runner_temperature_size_min">11pt</dimen>
+    <dimen name="runner_temperature_size_round_min">11pt</dimen>
+    <dimen name="runner_temperature_suffix_size_min">8pt</dimen>
+    <dimen name="runner_temperature_suffix_size_round_min">4pt</dimen>
+
+    <dimen name="runner_internal_distance">8dp</dimen>
+    <dimen name="runner_internal_distance_round">10dp</dimen>
 </resources>

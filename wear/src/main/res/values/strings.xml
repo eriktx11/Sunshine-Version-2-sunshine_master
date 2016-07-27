@@ -1,4 +1,11 @@
 <resources>
-    <string name="app_name">wear</string>
-    <string name="my_digital_name">wear</string>
+    <string name="app_name">sunwatch</string>
+    <string name="my_analog_name">My Analog</string>
+    <string name="time_txt">time</string>
+    <string name="date_txt">date</string>
+    <string name="deg_txt">degs</string>
+
+    <string name="runner_time_font">fonts/AkzidenzGrotesk-LightCond.otf</string>
+    <string name="runner_date_font">fonts/AkzidenzGrotesk-LightCond.otf</string>
+    <string name="runner_temperature_font">fonts/AkzidenzGrotesk-LightCond.otf</string>
 </resources>
