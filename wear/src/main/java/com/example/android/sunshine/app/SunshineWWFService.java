@@ -42,6 +42,7 @@ public class SunshineWWFService extends WeatherWatchFaceService{
             UPDATE_RATE_MS = 1000;
         }
 
+        boolean icon=false;
         @Override
         public void onCreate(SurfaceHolder holder) {
             super.onCreate(holder);
@@ -76,6 +77,8 @@ public class SunshineWWFService extends WeatherWatchFaceService{
 
             // Load resources that have alternate values for round watches.
             isRound = insets.isRound();
+
+            if(isRound){icon=true;}
 
             mInternalDistance = mResources.getDimension(isRound ?
                     R.dimen.runner_internal_distance_round : R.dimen.runner_internal_distance);
@@ -296,7 +299,14 @@ public class SunshineWWFService extends WeatherWatchFaceService{
 
 
                     }
-                    canvas.drawBitmap(mWeatherConditionDrawable, radius - mWeatherConditionDrawable.getWidth()+20 / 2, 0 - yOffset+153, null);
+
+                    if(icon){
+                        canvas.drawBitmap(mWeatherConditionDrawable, radius - mWeatherConditionDrawable.getWidth()+20 / 2, 0 - yOffset+156, null);
+                    }else {
+                        canvas.drawBitmap(mWeatherConditionDrawable, radius - mWeatherConditionDrawable.getWidth()+10 / 2, 0 - yOffset+163, null);
+                    }
+
+
 
                 }
 

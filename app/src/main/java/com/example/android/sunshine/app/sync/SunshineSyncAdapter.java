@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.wearable.companion.WatchFaceCompanion;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
@@ -34,6 +35,7 @@ import android.view.MenuItem;
 import android.view.SurfaceHolder;
 
 import com.example.android.sunshine.app.BuildConfig;
+import com.example.android.sunshine.app.DetailActivity;
 import com.example.android.sunshine.app.MainActivity;
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.Utility;
@@ -49,6 +51,7 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.wearable.WearableListenerService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,35 +90,35 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
     private static final int INDEX_MIN_TEMP = 2;
     private static final int INDEX_SHORT_DESC = 3;
 
+
+
+    GoogleApiClient googleClient;
     public SunshineSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
+
+        googleClient = new GoogleApiClient.Builder(getContext())
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        // Connect to the data layer when the Activity starts
+        googleClient.connect();
     }
 
    //----start of wearable----------------------
 
 
-
     // Build a new GoogleApiClient for the the Wearable API
-    GoogleApiClient googleClient=googleClient = new GoogleApiClient.Builder(getContext())
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
 
-
-    // Connect to the data layer when the Activity starts
-
-
-        //googleClient.connect();
 
     private String mPeerId;
     Bundle bundle = new Bundle();
 
-    @Override
-    public void onConnected(Bundle connectionHint) {
+
+    public void sendtoWatch(int high, int low, String description){
+
 
         String WEARABLE_DATA_PATH = "/wearable_data";
-
         // Create a DataMap object and send it to the data layer
         DataMap dataMap = new DataMap();
         //dataMap.putLong("time", new Date().getTime());
@@ -126,6 +129,25 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
         //dataMap.putString("back", "270");
         //Requires a new thread to avoid blocking the UI
         new SendToDataLayerThread(WEARABLE_DATA_PATH, dataMap).start();
+
+
+    }
+
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+
+//        String WEARABLE_DATA_PATH = "/wearable_data";
+//        // Create a DataMap object and send it to the data layer
+//        DataMap dataMap = new DataMap();
+//        //dataMap.putLong("time", new Date().getTime());
+//        dataMap.putInt("Temperature", bundle.getInt("Temperature"));
+//        dataMap.putInt("TemperatureLow", bundle.getInt("TemperatureLow"));
+//        dataMap.putString("Condition", bundle.getString("Description"));
+//        //dataMap.putString("middle", "260");
+//        //dataMap.putString("back", "270");
+//        //Requires a new thread to avoid blocking the UI
+//        new SendToDataLayerThread(WEARABLE_DATA_PATH, dataMap).start();
     }
 
 
@@ -138,7 +160,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
 
     @Override
     public void onResult(DataApi.DataItemResult dataItemResult) {
-        googleClient.disconnect();
+        //googleClient.disconnect();
     }
 
 
@@ -154,11 +176,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
 
         public void run() {
 
-            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/count");
-            putDataMapReq.getDataMap().putInt("COUNT_COUNT", 7);
-            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+//            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/count").setUrgent();
+//            putDataMapReq.getDataMap().putInt("COUNT_COUNT", 7);
+//            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
 
-            putDataMapReq.getDataMap().putLong("currentTimeMillis", System.currentTimeMillis());
+            //putDataMapReq.getDataMap().putLong("currentTimeMillis", System.currentTimeMillis());
             Wearable.MessageApi.sendMessage( googleClient, "mPeerId", path, dataMap.toByteArray() )
                     .setResultCallback(
                             new ResultCallback<MessageApi.SendMessageResult>() {
@@ -185,7 +207,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
 //                Log.v("myTag", "ERROR: failed to send DataMap to data layer");
 //            }
         }
-
     }
 
 
@@ -379,7 +400,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
                 JSONObject dayForecast = weatherArray.getJSONObject(i);
 
                 // Cheating to convert this to UTC time, which is what we want anyhow
-                dateTime = dayTime.setJulianDay(julianStartDay+i);
+                dateTime = dayTime.setJulianDay(julianStartDay + i);
 
                 pressure = dayForecast.getDouble(OWM_PRESSURE);
                 humidity = dayForecast.getInt(OWM_HUMIDITY);
@@ -414,10 +435,13 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
 
                 cVVector.add(weatherValues);
 
-                bundle.putInt("Temperature", (int) high);
-                bundle.putInt("TemperatureLow", (int)low);
-                bundle.putString("Description", description);
-                googleClient.connect();
+                if (i == 0) {
+                    bundle.putInt("Temperature", (int) high);
+                    bundle.putInt("TemperatureLow", (int) low);
+                    bundle.putString("Description", description);
+                    sendtoWatch((int) high, (int) low, description);
+
+                }
             }
 
             int inserted = 0;

@@ -308,7 +308,7 @@ public abstract class WeatherWatchFaceService extends CanvasWatchFaceService{
 
             if (config.containsKey(Consts.KEY_WEATHER_TEMPERATURE)) {
                 mTemperature = config.getInt(Consts.KEY_WEATHER_TEMPERATURE);
-                mTemperatureLow = config.getInt(Consts.KEY_WEATHER_TEMPERATURE);
+                mTemperatureLow = config.getInt(Consts.KEY_WEATHER_TEMPERATURE_LOW);
                 if (mTemperatureScale != ConverterUtil.FAHRENHEIT) {
                     mTemperature = ConverterUtil.convertFahrenheitToCelsius(mTemperature);
                 }
@@ -358,18 +358,18 @@ public abstract class WeatherWatchFaceService extends CanvasWatchFaceService{
             Wearable.NodeApi.getLocalNode(mGoogleApiClient).setResultCallback(new ResultCallback<NodeApi.GetLocalNodeResult>() {
                 @Override
                 public void onResult(NodeApi.GetLocalNodeResult getLocalNodeResult) {
-//                    Uri uri = new Uri.Builder()
-//                            .scheme("wear")
-//                            .path(Consts.PATH_CONFIG + mName)
-//                            .authority(getLocalNodeResult.getNode().getId())
-//                            .build();
-//
-//                    getConfig(uri);
-
                     Uri uri = new Uri.Builder()
                             .scheme("wear")
+                            .path(Consts.PATH_CONFIG + mName)
+                            .authority("mPeerId")
+                            .build();
+                    //.authority(getLocalNodeResult.getNode().getId())
+                    getConfig(uri);
+
+                    uri = new Uri.Builder()
+                            .scheme("wear")
                             .path(Consts.PATH_WEATHER_INFO)
-                            .authority(getLocalNodeResult.getNode().getId())
+                            .authority("mPeerId")
                             .build();
 
                     getConfig(uri);
