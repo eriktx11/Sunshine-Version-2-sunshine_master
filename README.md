@@ -1,15 +1,14 @@
-Android Studio - Watch App
+Watch face for Weather App
 ==========================
 
-Tasks completed
-----------------
+API KEY
+-------
+This app requires you to set your own API key from openweathermap.org, and place it into gradle.properties.
 
-App works on both round and square face watches.
+## About WeatherForWatch.
+This is an implementation for android watch face. For this, is necesary to set Google Api Client in the SynAdapter of the Sunshine's weather app. This information is then sent over the data layer to the watch, which mainly presents to the user the day's low/high temperature and time.
+It receives at the same time the type of weather, so it can pull for a .png image, which is displayed in the watch; telling in this way if day is, rainy, cloudy, sunny, etc.
 
-App displays the current time.
-
-App displays the high and low temperatures.
-
-App displays a graphic that summarizes the day’s weather (e.g., a sunny image, rainy image, cloudy image, etc.).
-
-App conforms to common standards found in the Android Nanodegree General Project Guidelines.
+## Tehcnologies used:
+- GCM.
+- Watch Face Engine.
