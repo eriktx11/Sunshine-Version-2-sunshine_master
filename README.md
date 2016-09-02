@@ -12,3 +12,9 @@ It receives at the same time the type of weather, so it can pull for a .png imag
 ## Tehcnologies used:
 - GCM.
 - Watch Face Engine.
+
+
+## License
+
+[Apache 2.0](https://svn.apache.org/viewvc/httpd/httpd/trunk/LICENSE?view=markup)  
+Also those added to the gradle configuration file.
