@@ -23,96 +23,16 @@ import com.google.android.gms.wearable.WearableListenerService;
  * Created by michaelHahn on 1/16/15.
  * Listener service or data events on the data layer
  */
+
+/**
+*Erik's note: This listener is receiving the data from the syncAdapter
+*After data is receive it will go to onDataChanged in WeatherWatchFaceService
+*/
 public class ListenerService extends WearableListenerService {
 
     private static final String WEARABLE_DATA_PATH = "/wearable_data";
     BroadcastReceiver receiver;
 
-
-
-//    @Override
-//    public void onMessageReceived(MessageEvent messageEvent){
-//        //  super.onMessageReceived(messageEvent);
-//
-//
-//        if (messageEvent.getPath().equals(WEARABLE_DATA_PATH)) {
-//            final String message = new String(messageEvent.getData());
-//
-//
-//            Intent intent = new Intent(this, WeatherWatchFaceService.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
-//
-//
-//
-//        }else {
-//            super.onMessageReceived(messageEvent);
-//        }
-//    }
-
-
-//    @Override
-//    public void onMessageReceived(MessageEvent messageEvent){
-//        //  super.onMessageReceived(messageEvent);
-//
-//
-//        if (messageEvent.getPath().equals(WEARABLE_DATA_PATH)) {
-//            final String message = new String(messageEvent.getData());
-//
-//
-//            Intent intent = new Intent(this, WeatherWatchFaceService.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
-//
-//
-//
-//        }else {
-//            super.onMessageReceived(messageEvent);
-//        }
-//    }
-
-
-//    @Override
-//    public void onDataChanged(DataEventBuffer dataEvents) {
-//
-//        DataMap dataMap;
-//        for (DataEvent event : dataEvents) {
-//            Log.v("myTag", "DataMap received on watch: " + DataMapItem.fromDataItem(event.getDataItem()).getDataMap());
-//            // Check the data type
-//            if (event.getType() == DataEvent.TYPE_CHANGED) {
-//                // Check the data path
-//                String path = event.getDataItem().getUri().getPath();
-//                if (path.equals(WEARABLE_DATA_PATH)) {
-//                }
-//                dataMap = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
-//
-//
-//                // Broadcast DataMap contents to wearable activity for display
-//                // The content has the golf hole number and distances to the front,
-//                // middle and back pin placements.
-//
-//                Intent messageIntent = new Intent(this, WeatherWatchFaceService.class);
-//                messageIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                messageIntent.putExtra("datamap", dataMap.toBundle());
-//                startActivity(messageIntent);
-//                //LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
-//
-//            }
-//        }
-//    }
-
-
-//    @Override
-//    public void onMessageReceived(MessageEvent messageEvent) {
-//
-//        DataMap dataMap;
-//        dataMap = (DataMap) messageEvent;
-//        Intent messageIntent = new Intent();
-//        messageIntent.setAction(Intent.ACTION_SEND);
-//        messageIntent.putExtra("datamap", dataMap.toBundle());
-//        LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
-//
-//    }
 
     private static final String TAG = ListenerService.class.getSimpleName();
 
@@ -290,9 +210,6 @@ public class ListenerService extends WearableListenerService {
             interval = config.getInt(Consts.KEY_CONFIG_REQUIRE_INTERVAL);
         }
     }
-
-
-
 }
 
 

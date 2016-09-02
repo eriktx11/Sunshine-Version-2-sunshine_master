@@ -71,9 +71,9 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
     public final String LOG_TAG = SunshineSyncAdapter.class.getSimpleName();
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 180 = 3 hours
-    public static final int SYNC_INTERVAL = 4;//60 * 180;
+    public static final int SYNC_INTERVAL = 60 * 180;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
-    private static final long DAY_IN_MILLIS = 1000;//1000 * 60 * 60 * 24;
+    private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
     private static final int WEATHER_NOTIFICATION_ID = 3004;
 
 
@@ -93,6 +93,8 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
 
 
     GoogleApiClient googleClient;
+
+    //every time sunshine syncs it will use this constructor to set googleApiclient otherwise it doesn't connect to the watch
     public SunshineSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
 
@@ -125,8 +127,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
         dataMap.putInt("Temperature", bundle.getInt("Temperature"));
         dataMap.putInt("TemperatureLow", bundle.getInt("TemperatureLow"));
         dataMap.putString("Condition", bundle.getString("Description"));
-        //dataMap.putString("middle", "260");
-        //dataMap.putString("back", "270");
         //Requires a new thread to avoid blocking the UI
         new SendToDataLayerThread(WEARABLE_DATA_PATH, dataMap).start();
 
@@ -136,18 +136,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
 
     @Override
     public void onConnected(Bundle connectionHint) {
-
-//        String WEARABLE_DATA_PATH = "/wearable_data";
-//        // Create a DataMap object and send it to the data layer
-//        DataMap dataMap = new DataMap();
-//        //dataMap.putLong("time", new Date().getTime());
-//        dataMap.putInt("Temperature", bundle.getInt("Temperature"));
-//        dataMap.putInt("TemperatureLow", bundle.getInt("TemperatureLow"));
-//        dataMap.putString("Condition", bundle.getString("Description"));
-//        //dataMap.putString("middle", "260");
-//        //dataMap.putString("back", "270");
-//        //Requires a new thread to avoid blocking the UI
-//        new SendToDataLayerThread(WEARABLE_DATA_PATH, dataMap).start();
     }
 
 
@@ -176,11 +164,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
 
         public void run() {
 
-//            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/count").setUrgent();
-//            putDataMapReq.getDataMap().putInt("COUNT_COUNT", 7);
-//            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-
-            //putDataMapReq.getDataMap().putLong("currentTimeMillis", System.currentTimeMillis());
             Wearable.MessageApi.sendMessage( googleClient, "mPeerId", path, dataMap.toByteArray() )
                     .setResultCallback(
                             new ResultCallback<MessageApi.SendMessageResult>() {
@@ -190,28 +173,8 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
                                 }
                             }
                     );
-
-
-//            PutDataMapRequest putDMR = PutDataMapRequest.create(path);
-//            putDMR.getDataMap().putAll(dataMap);
-//            PutDataRequest request = putDMR.asPutDataRequest();
-//            request.setUrgent();
-//
-//            //dataMap.getDataMap("dataMap").putLong("Time",System.currentTimeMillis());
-//            DataApi.DataItemResult result = Wearable.DataApi.putDataItem(googleClient, request).await();
-//
-//            if (result.getStatus().isSuccess()) {
-//                Log.v("myTag", "DataMap: " + dataMap + " sent successfully to data layer ");
-//            } else {
-//                // Log an error
-//                Log.v("myTag", "ERROR: failed to send DataMap to data layer");
-//            }
         }
     }
-
-
-
-
 
 
     //-----end of wearable -------------------
@@ -435,11 +398,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter implements 
 
                 cVVector.add(weatherValues);
 
-                if (i == 0) {
+                if (i == 0) {//this is for the watch. When i==0 it means is today's weather.
                     bundle.putInt("Temperature", (int) high);
                     bundle.putInt("TemperatureLow", (int) low);
                     bundle.putString("Description", description);
-                    sendtoWatch((int) high, (int) low, description);
+                    sendtoWatch((int) high, (int) low, description);// send data to watch method above
 
                 }
             }

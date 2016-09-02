@@ -450,18 +450,5 @@ public abstract class WeatherWatchFaceService extends CanvasWatchFaceService{
                 mUpdateTimeHandler.sendEmptyMessage(MSG_UPDATE_TIME);
             }
         }
-
-
-//    public class MessageReceiver extends BroadcastReceiver {
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            data = intent.getBundleExtra("datamap");
-//            Log.v("myTag2", "DataMap received on SERVICE: " + data.getString("hole"));
-//
-//            //display = "Hole: " + data.getString("hole");
-//        }
-//
-//    }
     }
 }

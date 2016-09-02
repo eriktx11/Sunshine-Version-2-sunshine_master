@@ -57,6 +57,7 @@ public class SunshineWWFService extends WeatherWatchFaceService{
             mTemperatureBorderPaint.setStrokeWidth(3f);
             mTemperatureBorderPaint.setAntiAlias(true);
 
+            //setting of font types
             Typeface timeFont = Typeface.createFromAsset(mAsserts, mResources.getString(R.string.runner_time_font));
             Typeface dateFont = Typeface.createFromAsset(mAsserts, mResources.getString(R.string.runner_date_font));
             Typeface tempFont = Typeface.createFromAsset(mAsserts, mResources.getString(R.string.runner_temperature_font));
@@ -282,6 +283,8 @@ public class SunshineWWFService extends WeatherWatchFaceService{
                         stringBuilder.append("snow");
                     }
 
+                    //toLowerCase shouldn't be needed but for some reason the drawable comes with a
+                    //capital letter causing the app to crash.
                     stringBuilder.append(mWeatherCondition.toLowerCase());
 
                     Log.v("myTag", "drawable is " + mWeatherCondition.toLowerCase());
