@@ -4,7 +4,7 @@ Watch face for Weather App
 
 API Key
 -------
-This app requires you to set your own API key from [openweathermap.org](openweathermap.org), and place it into gradle.properties.
+This app requires you to set your own API key from [openweathermap.org](https://www.openweathermap.org), and place it into gradle.properties.
 
 ## About WeatherForWatch.
 This is a watch face implementation for the Sunshine's weather app. For this, it is necesary to set Google Api Client in the SynAdapter of the Sunshine's code. This information is then sent over the data layer to the watch, which mainly presents to the user the day's low/high temperature, and time.
